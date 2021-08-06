@@ -1,0 +1,12 @@
+.\objects\lockproc.o: Source\lockproc.c
+.\objects\lockproc.o: Source\lockproc.h
+.\objects\lockproc.o: Source\mainconfig.h
+.\objects\lockproc.o: .\CMSIS\Device\ST\STM32F0xx\Include\stm32f051x8.h
+.\objects\lockproc.o: .\CMSIS\Include\core_cm0.h
+.\objects\lockproc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\lockproc.o: .\CMSIS\Include\core_cmInstr.h
+.\objects\lockproc.o: .\CMSIS\Include\cmsis_armcc.h
+.\objects\lockproc.o: .\CMSIS\Include\core_cmFunc.h
+.\objects\lockproc.o: .\CMSIS\Device\ST\STM32F0xx\Include\system_stm32f0xx.h
+.\objects\lockproc.o: Source\ssec.h
+.\objects\lockproc.o: .\Source\MyPeriph\mygpio.h
