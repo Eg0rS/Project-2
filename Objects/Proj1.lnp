@@ -8,6 +8,7 @@
 ".\objects\playsound.o"
 ".\objects\lockproc.o"
 ".\objects\manualkey.o"
+".\objects\analize.o"
 ".\objects\mydma.o"
 ".\objects\myexti.o"
 ".\objects\myflash.o"

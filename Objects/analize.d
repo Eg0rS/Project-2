@@ -1,0 +1,14 @@
+.\objects\analize.o: Source\analize.c
+.\objects\analize.o: Source\lockproc.h
+.\objects\analize.o: Source\mainconfig.h
+.\objects\analize.o: .\CMSIS\Device\ST\STM32F0xx\Include\stm32f051x8.h
+.\objects\analize.o: .\CMSIS\Include\core_cm0.h
+.\objects\analize.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\analize.o: .\CMSIS\Include\core_cmInstr.h
+.\objects\analize.o: .\CMSIS\Include\cmsis_armcc.h
+.\objects\analize.o: .\CMSIS\Include\core_cmFunc.h
+.\objects\analize.o: .\CMSIS\Device\ST\STM32F0xx\Include\system_stm32f0xx.h
+.\objects\analize.o: Source\mysettings.h
+.\objects\analize.o: Source\analize.h
+.\objects\analize.o: .\Source\MyPeriph\mygpio.h
+.\objects\analize.o: Source\ssec.h

@@ -15,3 +15,4 @@
 .\objects\main.o: Source\buttonpush.h
 .\objects\main.o: Source\lockproc.h
 .\objects\main.o: Source\manualkey.h
+.\objects\main.o: Source\analize.h

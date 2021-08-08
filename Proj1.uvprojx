@@ -311,7 +311,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -424,6 +424,11 @@
               <FileName>manualkey.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\manualkey.c</FilePath>
+            </File>
+            <File>
+              <FileName>analize.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\analize.c</FilePath>
             </File>
           </Files>
         </Group>
