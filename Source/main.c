@@ -8,11 +8,84 @@
 #include "lockproc.h"
 #include "manualkey.h"
 
-
 // Связь между проигрывающей и записывающей частями
 // 
+uint32_t curkey;
+uint32_t curmask;
+
 int16_t push[MAXIMPULS];  // Времена импульсов
-int16_t pnum1=0;    // Число импульсов в массиве
+//extern int16_t pnum;    // Число импульсов в массиве // задается в buttonpush
+
+void SetPass(uint32_t mask, uint32_t key){  // запись пароля в в память 
+	  DSt.currentkey=key;
+	  DSt.currentmask=mask;
+		hssavetime=getssec();
+}
+
+void CheckPass(uint32_t mask, uint32_t key){ // 
+	if(mask == DSt.currentmask && key == DSt.currentkey){
+		DoorCmd(0);
+	}
+
+}
+void Analize(int16_t massToAnalize[], int16_t size){
+				  int16_t max = massToAnalize[0];
+				  int16_t min = massToAnalize[0];
+	        int16_t averageValue;
+	        uint32_t mask = 0;
+	        uint32_t key = 0;
+	
+          if(size == 1){
+						if (massToAnalize[0] >=80){
+							DoorCmd(1);
+							return;
+						}
+					}
+          // 	equalValues - флаг разности значений
+	        //  0 - Считаем, что элементы в массиве разные
+	        //  1 - Считаем, что элементы в массиве одинаковые
+	        int16_t equalValues = 0;
+				
+				  for(int i = 2; i<size; i+=2){             // находим максимальны и минимальный элемент массива
+						if (massToAnalize[i] < min){
+							min = massToAnalize[i];
+						}
+						if (massToAnalize[i] > max){
+							max = massToAnalize[i];
+						}
+					}
+					averageValue = (max - min)/2;
+					if (__fabs(1-(min/max))<=0.1){
+						equalValues = 1;
+					}
+					 
+					if (equalValues == 0){
+						for(int i = 0; i<size; i+=2){
+							mask <<= 1;
+							if(massToAnalize[i] <= averageValue){
+								key |= 0;
+							}
+							else{
+								key |= 1;
+							}
+						}
+					}
+					else{
+						for(int i = 0; i<size; i+=2){
+							mask <<= 1;
+							key |= 1;
+						}
+					}
+					
+					if(!GGetPin(PROGSW)){
+						SetPass(mask, key);
+					}
+					else{
+						CheckPass(mask, key);
+					}
+}
+
+
 
 void SysInit(void) {
   RCC->CR |= 0x00000001;     // ???????? HSI
@@ -84,13 +157,15 @@ int main() {
     CheckSaveHardDSt();
     if (buttonpush()) {
 // Пришел массив. Надо анализировать (Пока проигрываем)
+			 Analize(push, pnum1);
+			 
+	//		mask<<=1; // 
+	//		mask|=1;  // Добавляешь единичку
 			
-			mask<<=1; // 
-			mask|=1;  // Добавляешь единичку
 			
+		
+			//StartSound();
 			
-			
-			StartSound();
 			/*
 			  DSt.currentkey=0xABCDEF;
 		  	hssavetime=getssec();

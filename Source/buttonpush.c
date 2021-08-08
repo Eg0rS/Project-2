@@ -3,7 +3,9 @@
 #include "ssec.h"
 
 // Переменные функции записи данных
-int16_t pnum=0;  // Число записанных элементов
+int16_t pnum;
+//extern int16_t pnum;  // Число записанных элементов
+int16_t pnum1;
 int16_t onb=0;   // Флаг нажатой кнопки
 int16_t starton=0; // Флаг отжатой кнопки
 // Измерение времени паузы и нажатия
@@ -41,7 +43,7 @@ uint8_t buttonpush() {
       if (ontime2&&(tdlt(ontime2)>1000)) {
         rezt=1;
         ontime2=0;
-        pnum1=pnum;
+				pnum1 = pnum;
         pnum=0;
       }
     }
