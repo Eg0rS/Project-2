@@ -4,10 +4,13 @@
 #include "mygpio.h"
 #include "ssec.h"
 
+
+
 void SetPass(uint32_t mask, uint32_t key){  // запись пароля в в память 
-	  DSt.currentkey=key;
-	  DSt.currentmask=mask;
-		hssavetime=getssec();
+	DSt.currentkey=key;
+	DSt.currentmask=mask;
+	hssavetime=getssec();
+
 }
 
 void CheckPass(uint32_t mask, uint32_t key){ // проверка пароля с заданым заранее 
@@ -18,9 +21,11 @@ void CheckPass(uint32_t mask, uint32_t key){ // проверка пароля с заданым заране
 void Analize(int16_t massToAnalize[], int16_t size){ // анализ массива с паролем 
 				  int16_t max = massToAnalize[0];
 				  int16_t min = massToAnalize[0];
-	        int16_t averageValue;
-	        uint32_t mask = 0;
-	        uint32_t key = 0;
+	        int16_t averageValue=0;
+	        //uint32_t mask = 1;
+	        //uint32_t key = 0;
+	        uint32_t mask = 1;
+					uint32_t key = 0;
 	
           if(size == 1){
 						if (massToAnalize[0] >=80){
@@ -50,20 +55,25 @@ void Analize(int16_t massToAnalize[], int16_t size){ // анализ массива с паролем
 					if (equalValues == 0){
 						for(int i = 0; i<size; i+=2){
 							mask <<= 1;
+							mask |= 1;
 							if(massToAnalize[i] <= averageValue){
 								key |= 0;
+								key <<= 1;
 							}
 							else{
 								key |= 1;
+								key <<= 1;
 							}
 						}
 					}
 					else{
 						for(int i = 0; i<size; i+=2){
 							mask <<= 1;
-							key |= 1;
+							mask |= 1;
 						}
-					}
+					 }
+					key >>= 1;
+					mask >>= 1;
 					
 					if(!GGetPin(PROGSW)){ // Если геркон с магнитом, записываем пароль
 						SetPass(mask, key);
