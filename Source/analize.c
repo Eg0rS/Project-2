@@ -6,25 +6,25 @@
 
 
 
-void SetPass(uint32_t mask, uint32_t key){  // запись пароля в в память 
+void SetPass(uint32_t mask, uint32_t key){  // Г§Г ГЇГЁГ±Гј ГЇГ Г°Г®Г«Гї Гў Гў ГЇГ Г¬ГїГІГј 
 	DSt.currentkey=key;
 	DSt.currentmask=mask;
 	hssavetime=getssec();
 
 }
 
-void CheckPass(uint32_t mask, uint32_t key){ // проверка пароля с заданым заранее 
-	if(mask == DSt.currentmask && key == DSt.currentkey){ // При совпадении открываем замок 
+void CheckPass(uint32_t mask, uint32_t key){ // ГЇГ°Г®ГўГҐГ°ГЄГ  ГЇГ Г°Г®Г«Гї Г± Г§Г Г¤Г Г­Г»Г¬ Г§Г Г°Г Г­ГҐГҐ 
+	if(mask == DSt.currentmask && key == DSt.currentkey){ // ГЏГ°ГЁ Г±Г®ГўГЇГ Г¤ГҐГ­ГЁГЁ Г®ГІГЄГ°Г»ГўГ ГҐГ¬ Г§Г Г¬Г®ГЄ 
 		DoorCmd(0);
 	}
 }
-void Analize(int16_t massToAnalize[], int16_t size){ // анализ массива с паролем 
+void Analize(int16_t massToAnalize[], int16_t size){ // Г Г­Г Г«ГЁГ§ Г¬Г Г±Г±ГЁГўГ  Г± ГЇГ Г°Г®Г«ГҐГ¬ 
 				  int16_t max = massToAnalize[0];
 				  int16_t min = massToAnalize[0];
 	        int16_t averageValue=0;
 	        //uint32_t mask = 1;
 	        //uint32_t key = 0;
-	        uint32_t mask = 1;
+	        uint32_t mask = 0;
 					uint32_t key = 0;
 	
           if(size == 1){
@@ -33,12 +33,12 @@ void Analize(int16_t massToAnalize[], int16_t size){ // анализ массива с паролем
 							return;
 						}
 					}
-          // 	equalValues - флаг разности значений
-	        //  0 - Считаем, что элементы в массиве разные
-	        //  1 - Считаем, что элементы в массиве одинаковые
+          // 	equalValues - ГґГ«Г ГЈ Г°Г Г§Г­Г®Г±ГІГЁ Г§Г­Г Г·ГҐГ­ГЁГ©
+	        //  0 - Г‘Г·ГЁГІГ ГҐГ¬, Г·ГІГ® ГЅГ«ГҐГ¬ГҐГ­ГІГ» Гў Г¬Г Г±Г±ГЁГўГҐ Г°Г Г§Г­Г»ГҐ
+	        //  1 - Г‘Г·ГЁГІГ ГҐГ¬, Г·ГІГ® ГЅГ«ГҐГ¬ГҐГ­ГІГ» Гў Г¬Г Г±Г±ГЁГўГҐ Г®Г¤ГЁГ­Г ГЄГ®ГўГ»ГҐ
 	        int16_t equalValues = 0;
 				
-				  for(int i = 2; i<size; i+=2){             // Находим максимальны и минимальный элемент массива
+				  for(int i = 2; i<size; i+=2){             // ГЌГ ГµГ®Г¤ГЁГ¬ Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г» ГЁ Г¬ГЁГ­ГЁГ¬Г Г«ГјГ­Г»Г© ГЅГ«ГҐГ¬ГҐГ­ГІ Г¬Г Г±Г±ГЁГўГ 
 						if (massToAnalize[i] < min){
 							min = massToAnalize[i];
 						}
@@ -48,7 +48,7 @@ void Analize(int16_t massToAnalize[], int16_t size){ // анализ массива с паролем
 					}
 					averageValue = (max - min)/2;
 					
-					if (__fabs(1-(min/max))<=0.1){ // если разница меньше 10 процентов 
+					if (__fabs(1-(min/max))<=0.1){ // ГҐГ±Г«ГЁ Г°Г Г§Г­ГЁГ¶Г  Г¬ГҐГ­ГјГёГҐ 10 ГЇГ°Г®Г¶ГҐГ­ГІГ®Гў 
 						equalValues = 1;
 					}
 					 
@@ -56,13 +56,12 @@ void Analize(int16_t massToAnalize[], int16_t size){ // анализ массива с паролем
 						for(int i = 0; i<size; i+=2){
 							mask <<= 1;
 							mask |= 1;
+							key <<= 1;
 							if(massToAnalize[i] <= averageValue){
 								key |= 0;
-								key <<= 1;
 							}
 							else{
 								key |= 1;
-								key <<= 1;
 							}
 						}
 					}
@@ -72,13 +71,11 @@ void Analize(int16_t massToAnalize[], int16_t size){ // анализ массива с паролем
 							mask |= 1;
 						}
 					 }
-					key >>= 1;
-					mask >>= 1;
-					
-					if(!GGetPin(PROGSW)){ // Если геркон с магнитом, записываем пароль
+									
+					if(!GGetPin(PROGSW)){ // Г…Г±Г«ГЁ ГЈГҐГ°ГЄГ®Г­ Г± Г¬Г ГЈГ­ГЁГІГ®Г¬, Г§Г ГЇГЁГ±Г»ГўГ ГҐГ¬ ГЇГ Г°Г®Г«Гј
 						SetPass(mask, key);
 					}
 					else{
-						CheckPass(mask, key); // Если нет, сверяем с текущеим записанным
+						CheckPass(mask, key); // Г…Г±Г«ГЁ Г­ГҐГІ, Г±ГўГҐГ°ГїГҐГ¬ Г± ГІГҐГЄГіГ№ГҐГЁГ¬ Г§Г ГЇГЁГ±Г Г­Г­Г»Г¬
 					}
 }
