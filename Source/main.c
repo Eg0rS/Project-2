@@ -9,10 +9,10 @@
 #include "manualkey.h"
 #include "analize.h"
 
-// Связь между проигрывающей и записывающей частями
+// Г‘ГўГїГ§Гј Г¬ГҐГ¦Г¤Гі ГЇГ°Г®ГЁГЈГ°Г»ГўГ ГѕГ№ГҐГ© ГЁ Г§Г ГЇГЁГ±Г»ГўГ ГѕГ№ГҐГ© Г·Г Г±ГІГїГ¬ГЁ
 // 
 
-int16_t push[MAXIMPULS];  // Времена импульсов
+int16_t push[MAXIMPULS];  // Г‚Г°ГҐГ¬ГҐГ­Г  ГЁГ¬ГЇГіГ«ГјГ±Г®Гў
 
 void SysInit(void) {
   RCC->CR |= 0x00000001;     // ???????? HSI
@@ -82,25 +82,13 @@ int main() {
   }
   for (;;) {  
     CheckSaveHardDSt();
-    if (buttonpush()) {
-// Пришел массив. Надо анализировать (Пока проигрываем)
-			 Analize(push, pnum1);
-
-			 
-	//		mask<<=1; // 
-	//		mask|=1;  // Добавляешь единичку
-			
-			StartSound();
-			
-			/*
-			  DSt.currentkey=0xABCDEF;
-		  	hssavetime=getssec();
-			*/
-			
+    if (buttonpush()) {  
+	Analize(push, pnum1);	 			
+	StartSound();			
     }
     beep();
-		opendoor();
-		manualkey();
+    opendoor();
+    manualkey();
   }
 
 }
