@@ -4,41 +4,37 @@
 #include "mygpio.h"
 #include "ssec.h"
 
-
-
-void SetPass(uint32_t mask, uint32_t key){  // çàïèñü ïàðîëÿ â â ïàìÿòü 
+void SetPass(uint32_t mask, uint32_t key){   
 	DSt.currentkey=key;
 	DSt.currentmask=mask;
 	hssavetime=getssec();
 
 }
 
-void CheckPass(uint32_t mask, uint32_t key){ // ïðîâåðêà ïàðîëÿ ñ çàäàíûì çàðàíåå 
-	if(mask == DSt.currentmask && key == DSt.currentkey){ // Ïðè ñîâïàäåíèè îòêðûâàåì çàìîê 
+void CheckPass(uint32_t mask, uint32_t key){ 
+	if(mask == DSt.currentmask && key == DSt.currentkey){  
 		DoorCmd(0);
 	}
 }
-void Analize(int16_t massToAnalize[], int16_t size){ // àíàëèç ìàññèâà ñ ïàðîëåì 
-				  int16_t max = massToAnalize[0];
-				  int16_t min = massToAnalize[0];
+void Analize(int16_t massToAnalize[], int16_t size){ 
+		int16_t max = massToAnalize[0];
+		int16_t min = massToAnalize[0];
 	        int16_t averageValue=0;
-	        //uint32_t mask = 1;
-	        //uint32_t key = 0;
 	        uint32_t mask = 0;
-					uint32_t key = 0;
+		uint32_t key = 0;
 	
           if(size == 1){
-						if (massToAnalize[0] >=80){
-							DoorCmd(1);
-							return;
-						}
-					}
-          // 	equalValues - ôëàã ðàçíîñòè çíà÷åíèé
-	        //  0 - Ñ÷èòàåì, ÷òî ýëåìåíòû â ìàññèâå ðàçíûå
-	        //  1 - Ñ÷èòàåì, ÷òî ýëåìåíòû â ìàññèâå îäèíàêîâûå
+		if (massToAnalize[0] >=80){
+			DoorCmd(1);
+			return;
+		}
+	}
+          	// 	equalValues - флаг разности длительности введеных 
+	        //  0 - значения разные 
+	        //  1 - значения одинаковые
 	        int16_t equalValues = 0;
 				
-				  for(int i = 2; i<size; i+=2){             // Íàõîäèì ìàêñèìàëüíû è ìèíèìàëüíûé ýëåìåíò ìàññèâà
+				  for(int i = 2; i<size; i+=2){             
 						if (massToAnalize[i] < min){
 							min = massToAnalize[i];
 						}
@@ -46,9 +42,9 @@ void Analize(int16_t massToAnalize[], int16_t size){ // àíàëèç ìàññè�
 							max = massToAnalize[i];
 						}
 					}
-					averageValue = (max - min)/2;
+					averageValue = (max - min) / 2;
 					
-					if (__fabs(1-(min/max))<=0.1){ // åñëè ðàçíèöà ìåíüøå 10 ïðîöåíòîâ 
+					if (__fabs(1 - (min/max))<=0.1){ 
 						equalValues = 1;
 					}
 					 
@@ -66,16 +62,16 @@ void Analize(int16_t massToAnalize[], int16_t size){ // àíàëèç ìàññè�
 						}
 					}
 					else{
-						for(int i = 0; i<size; i+=2){
+						for(int i = 0; i < size; i += 2){
 							mask <<= 1;
 							mask |= 1;
 						}
 					 }
 									
-					if(!GGetPin(PROGSW)){ // Åñëè ãåðêîí ñ ìàãíèòîì, çàïèñûâàåì ïàðîëü
+					if(!GGetPin(PROGSW)){ 
 						SetPass(mask, key);
 					}
 					else{
-						CheckPass(mask, key); // Åñëè íåò, ñâåðÿåì ñ òåêóùåèì çàïèñàííûì
+						CheckPass(mask, key); 
 					}
 }
