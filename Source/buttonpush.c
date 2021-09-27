@@ -9,7 +9,6 @@ int16_t starton = 0;
 uint32_t ontime1 = 0;
 uint32_t ontime2 = 0;
 
-
 uint8_t buttonpush() {  // добавляет очередное нажатие на кнопку в массив нажатий
 	uint8_t rezt = 0;
 	if (!GGetPin(BUTTON)) {
