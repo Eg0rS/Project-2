@@ -4,74 +4,66 @@
 #include "mygpio.h"
 #include "ssec.h"
 
-void SetPass(uint32_t mask, uint32_t key){   
-	DSt.currentkey=key;
-	DSt.currentmask=mask;
-	hssavetime=getssec();
-
+void SetPass(uint32_t mask, uint32_t key){   				//Функция записи нового пароля в постоянную память.
+	DSt.currentkey=key;						//Маписывам ключ.
+	DSt.currentmask=mask;						//Записываем маску.
+	hssavetime=getssec();						//Засекам время записи.
 }
 
-void CheckPass(uint32_t mask, uint32_t key){ 
-	if(mask == DSt.currentmask && key == DSt.currentkey){  
-		DoorCmd(0);
+void CheckPass(uint32_t mask, uint32_t key){ 				//Функция проверки пароля.
+	if(mask == DSt.currentmask && key == DSt.currentkey){  		//Если маска и пароль совпадают с данными из постоянной памяти
+		DoorCmd(0);						//Открываем замок.
 	}
 }
-void Analize(int16_t massToAnalize[], int16_t size){ 
-		int16_t max = massToAnalize[0];
-		int16_t min = massToAnalize[0];
-	        int16_t averageValue=0;
-	        uint32_t mask = 0;
-		uint32_t key = 0;
-	
-          if(size == 1){
-		if (massToAnalize[0] >=80){
-			DoorCmd(1);
-			return;
-		}
-	}
-          	// 	equalValues - флаг разности длительности введеных 
+void Analize(int16_t massToAnalize[], int16_t size){ 			//Функция анализа массива нажатий.
+	int16_t max = massToAnalize[0];					//Максимально длинное нажатие.
+	int16_t min = massToAnalize[0];					//Манимально короткое нажатие.
+	int16_t averageValue=0;						//Нажатие средней длинны.
+	uint32_t mask = 0;						//Маска пароля.
+	uint32_t key = 0;						//Ключ пароля.
+	// 	equalValues - флаг разности длительности введеных 
 	        //  0 - значения разные 
 	        //  1 - значения одинаковые
-	        int16_t equalValues = 0;
-				
-				  for(int i = 2; i<size; i+=2){             
-						if (massToAnalize[i] < min){
-							min = massToAnalize[i];
-						}
-						if (massToAnalize[i] > max){
-							max = massToAnalize[i];
-						}
-					}
-					averageValue = (max - min) / 2;
-					
-					if (__fabs(1 - (min/max))<=0.1){ 
-						equalValues = 1;
-					}
-					 
-					if (equalValues == 0){
-						for(int i = 0; i<size; i+=2){
-							mask <<= 1;
-							mask |= 1;
-							key <<= 1;
-							if(massToAnalize[i] <= averageValue){
-								key |= 0;
-							}
-							else{
-								key |= 1;
-							}
-						}
-					}
-					else{
-						for(int i = 0; i < size; i += 2){
-							mask <<= 1;
-							mask |= 1;
-						}
-					 }
-									
-					if(!GGetPin(PROGSW)){ 
-						SetPass(mask, key);
-					}
-					else{
-						CheckPass(mask, key); 
-					}
+	int16_t equalValues = 0;
+	
+        if(size == 1){							//Если нажатие одно.
+		if (massToAnalize[0] >=80){				//Если нажатие длинное (более 80мс).
+			DoorCmd(1);					//Закрывае замок.
+			return;
+		}
+	}  
+ 	for(int i = 2; i<size; i+=2){             			//Проходим по всему массиву просматривая каждый 2 элемент (только нажатия без пауз)
+		if (massToAnalize[i] < min){				//Если значение меньше минимального.
+			min = massToAnalize[i];				//Минимальное = текущее просматриваемое.
+		}
+		if (massToAnalize[i] > max){				//Если значение больше максимального.
+			max = massToAnalize[i];				//Максимальное = текущее просматриваемое.
+		}
+	}
+	averageValue = (max - min) / 2;					//Вычисляем среднюю длинну нажатия.	
+	if (__fabs(1 - (min/max))<=0.1){ 				//Если максимальное значение отличается от минимального меньше чем на 10%.
+		equalValues = 1;					//Считаем все нажатия одинаковыми.
+	}			 
+	if (equalValues == 0){						//Если нажатия разные.
+		for(int i = 0; i<size; i+=2){				//Проходим по каждому нажатию в массиве.
+			mask <<= 1;					//Побитово сдвигаем маску на 1. 
+			mask |= 1;					//Побитово складываем маску с 1.
+			key <<= 1;					//Побитово сдвигаем ключ на 1. 
+			if(massToAnalize[i] <= averageValue){		//Если длинна текущего нажатия не больше средней длинны нажатия. 
+				key |= 0;				//Побитово складываем ключ с 0.
+			}else{
+				key |= 1;				//Побитово складываем ключ с 0.
+			}
+		}
+	}else{								//Если нажатия одинаковые.
+		for(int i = 0; i < size; i += 2){			//Проходим по каждому нажатию в массиве.
+			mask <<= 1;					//Побитово сдвигаем маску на 1.
+			mask |= 1;					//Побитово складываем маску с 1.
+		}
+	}								
+	if(!GGetPin(PROGSW)){ 						//Если нужно записать пароль.
+		SetPass(mask, key);					//Записываем новый пароль.
+	}else{								//Если не нужно записывать пароль.
+		CheckPass(mask, key); 					//Сверяем пароль с текщим паролем.	
+	}
 }
