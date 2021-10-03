@@ -77,13 +77,13 @@ int main() {
   }
   for (;;) {  
     CheckSaveHardDSt();
-    if (buttonpush()) {  
-	Analize(push, pnum1);	 			
-	StartSound();			
+    if (buttonpush()) {  					//Заполняем массив нажатий.
+	Analize(push, pnum1);	 				//Анализируем массив.			
+	StartSound();						//Начинаем проигрывать массив.			
     }
-    beep();
-    opendoor();
-    manualkey();
+    beep();							//Проигрываем каждый элемент массива.	
+    opendoor();							//Обратываем операцию с замком.
+    manualkey();						//Обрабатываем нажатия на кнопки отрытия\закрытия замка.
   }
 
 }
