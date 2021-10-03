@@ -1,31 +1,31 @@
 #include "playsound.h"
 #include "ssec.h"
 
-int16_t action_time = 0;
-int16_t pnum2 = 0; 
-int16_t playsound = 0;
+int16_t action_time = 0;					//Время действия.
+int16_t pnum2 = 0; 						//Индекс в массиве push текущего воспроизводимого элемента.
+int16_t playsound = 0;						//Флаг нужно ли воспроизводить звук.
 
 void StartSound(void) {
-  pnum2 = 0;
-  playsound = 1;
-  action_time = getssec();
-  Sound(1); 
+  pnum2 = 0;							//Воспроизводить массив push сначала.
+  playsound = 1;						//Массив нужно проиграть.
+  action_time = getssec();					//Время начала воспроизведения первого элемента.
+  Sound(1); 							//Воспроизводим звук первого элемента.
 }
 
 void beep(void){
-	if (playsound) {
-		if (tdlt(action_time) >= push[pnum2]) {
-			pnum2++;
-			if (pnum2 < pnum1) {
-				action_time=getssec();
-				if (pnum2 & 1){ 
-					Sound(0);
+	if (playsound) {					//Если массив нужно проиграть.
+		if (tdlt(action_time) >= push[pnum2]) {		//Если текущий элемент больше не надо воспрозводить.
+			pnum2++;				//Увеличиваем индекс текущего воспроизводимого элемента.
+			if (pnum2 < pnum1) {			//Если индекс текущего воспроизводимого элемента меньше индекса элемента, который нужно воспроизвести последним.
+				action_time=getssec();		//Записваем время начала действия.
+				if (pnum2 & 1){ 		//Если индекс четный.
+					Sound(0);		//Воспроизводим паузу.
 				} else { 
-					Sound(1);
+					Sound(1);		//Воспроизводим нажатие.
 				}
-			} else {
-				playsound=0;
-				Sound(0);
+			} else {				//Если массив больше не надо воспроизводить.
+				playsound=0;			//Массив не надо проигывать.
+				Sound(0);			//Выключаем произведения звука.	
 			}
 		}
 	}
